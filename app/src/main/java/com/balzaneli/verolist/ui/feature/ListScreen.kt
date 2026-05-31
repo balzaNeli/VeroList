@@ -30,18 +30,25 @@ import com.balzaneli.verolist.ui.theme.VeroListTheme
 
 @Composable
 fun ListScreen(
-    todos: List<Todo>
+    navigateToAddEditScreen: (id: Long?) -> Unit,
 ) {
-    ListContent(todos = todos)
+    ListContent(
+        todos = emptyList(),
+        onAddItemClick = {
+            navigateToAddEditScreen(null)
+        }
+    )
 }
+
 
 @Composable
 fun ListContent(
-    todos: List<Todo>
+    todos: List<Todo>,
+    onAddItemClick: (id: Long?) -> Unit,
 ) {
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = {onAddItemClick(null)}) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         }
@@ -80,7 +87,8 @@ private fun ListContentPreview() {
                 todo1,
                 todo2,
                 todo3,
-            )
+            ),
+            onAddItemClick = {},
         )
     }
 }

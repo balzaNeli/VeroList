@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.balzaneli.verolist.domain.todo1
 import com.balzaneli.verolist.domain.todo2
 import com.balzaneli.verolist.domain.todo3
+import com.balzaneli.verolist.navigation.TodoNavHost
 import com.balzaneli.verolist.ui.feature.ListScreen
 import com.balzaneli.verolist.ui.theme.VeroListTheme
 
@@ -23,9 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VeroListTheme {
-                ListScreen(
-                    todos = listOf(todo1, todo2, todo3)
-                )
+                TodoNavHost()
             }
         }
     }
