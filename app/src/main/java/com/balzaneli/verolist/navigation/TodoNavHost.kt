@@ -1,15 +1,11 @@
 package com.balzaneli.verolist.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.balzaneli.verolist.domain.todo1
-import com.balzaneli.verolist.domain.todo2
-import com.balzaneli.verolist.domain.todo3
-import com.balzaneli.verolist.ui.feature.AddEditScreen
+import com.balzaneli.verolist.ui.feature.addedit.AddEditScreen
 import com.balzaneli.verolist.ui.feature.ListScreen
 import kotlinx.serialization.Serializable
 
