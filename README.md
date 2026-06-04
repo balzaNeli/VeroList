@@ -86,7 +86,7 @@ app/
 
 ## 📄 Licença
 
-Este projeto é de uso educacional. Sinta-se livre para usar e modificar.# Vero
-
+Este projeto é de uso educacional. Sinta-se livre para usar e modificar.
+# Vero
 > A clean, minimal To-Do List app for Android built with Jetpack Compose and MVVM architecture.
 
