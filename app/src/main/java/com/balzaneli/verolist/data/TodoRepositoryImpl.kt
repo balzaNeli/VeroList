@@ -8,17 +8,27 @@ class TodoRepositoryImpl(
     private val dao: TodoDao,
 ) : TodoRepository {
 
-    override suspend fun insert(title: String, description: String?, id: Long?) {
-        val entity = id?.let{
+    override suspend fun insert(
+        title: String,
+        description: String?,
+        id: Long?,
+        dueDate: Long?,
+        attachments: List<String>
+    ) {
+        val entity = id?.let {
             dao.getBy(it)?.copy(
                 title = title,
                 description = description,
+                dueDate = dueDate,
+                attachments = attachments
             )
         } ?: TodoEntity(
-                title = title,
-                description = description,
-                isCompleted = false,
-            )
+            title = title,
+            description = description,
+            isCompleted = false,
+            dueDate = dueDate,
+            attachments = attachments
+        )
 
         dao.insert(entity)
     }
@@ -41,7 +51,9 @@ class TodoRepositoryImpl(
                     id = entity.id,
                     title = entity.title,
                     description = entity.description,
-                    isCompleted = entity.isCompleted
+                    isCompleted = entity.isCompleted,
+                    dueDate = entity.dueDate,
+                    attachments = entity.attachments
                 )
             }
         }
@@ -53,7 +65,9 @@ class TodoRepositoryImpl(
                 id = entity.id,
                 title = entity.title,
                 description = entity.description,
-                isCompleted = entity.isCompleted
+                isCompleted = entity.isCompleted,
+                dueDate = entity.dueDate,
+                attachments = entity.attachments
             )
         }
     }

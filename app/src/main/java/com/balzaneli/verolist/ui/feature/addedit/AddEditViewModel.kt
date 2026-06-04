@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balzaneli.verolist.data.TodoRepository
 import com.balzaneli.verolist.ui.UiEvent
 import kotlinx.coroutines.channels.Channel
@@ -17,12 +16,16 @@ class AddEditViewModel(
     private val repository: TodoRepository,
 ) : ViewModel() {
 
-
-
     var title by mutableStateOf("")
         private set
 
     var description by mutableStateOf<String?>(null)
+        private set
+
+    var dueDate by mutableStateOf<Long?>(null)
+        private set
+
+    var attachments by mutableStateOf<List<String>>(emptyList())
         private set
 
     private val _uiEvent = Channel<UiEvent>()
@@ -30,21 +33,29 @@ class AddEditViewModel(
 
     init {
         id?.let {
-            viewModelScope.launch{
+            viewModelScope.launch {
                 val todo = repository.getBy(it)
                 title = todo?.title ?: ""
                 description = todo?.description
+                dueDate = todo?.dueDate
+                attachments = todo?.attachments ?: emptyList()
             }
         }
     }
 
-    fun onEvent(event: AddEditEvent){
-        when (event){
+    fun onEvent(event: AddEditEvent) {
+        when (event) {
             is AddEditEvent.TitleChanged -> {
                 title = event.title
             }
             is AddEditEvent.DescriptionChanged -> {
                 description = event.description
+            }
+            is AddEditEvent.DueDateChanged -> {
+                dueDate = event.dueDate
+            }
+            is AddEditEvent.AttachmentsChanged -> {
+                attachments = event.attachments
             }
             AddEditEvent.Save -> {
                 saveTodo()
@@ -52,14 +63,13 @@ class AddEditViewModel(
         }
     }
 
-
-    private fun saveTodo(){
+    private fun saveTodo() {
         viewModelScope.launch {
-            if(title.isBlank()){
+            if (title.isBlank()) {
                 _uiEvent.send(UiEvent.ShowSnackbar("Kd o titulo?"))
                 return@launch
             }
-            repository.insert(title, description, id)
+            repository.insert(title, description, id, dueDate, attachments)
             _uiEvent.send(UiEvent.NavigationBack)
         }
     }

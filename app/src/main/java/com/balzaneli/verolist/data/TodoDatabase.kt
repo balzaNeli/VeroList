@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(
     entities = [TodoEntity::class],
-    version = 1,
+    version = 2,
 )
+@TypeConverters(Converters::class)
 abstract class TodoDatabase : RoomDatabase() {
 
     abstract val dao: TodoDao
@@ -25,7 +27,9 @@ object TodoDatabaseProvider {
                 context.applicationContext,
                 TodoDatabase::class.java,
                 "vero-app"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
             INSTANCE = instance
             instance
         }

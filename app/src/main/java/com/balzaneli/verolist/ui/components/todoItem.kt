@@ -1,4 +1,5 @@
 package com.balzaneli.verolist.ui.components
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -23,6 +25,9 @@ import com.balzaneli.verolist.domain.Todo
 import com.balzaneli.verolist.domain.todo1
 import com.balzaneli.verolist.domain.todo2
 import com.balzaneli.verolist.ui.theme.VeroListTheme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun TodoItem(
@@ -41,7 +46,7 @@ fun TodoItem(
             width = 1.dp,
             color = MaterialTheme.colorScheme.outline
         )
-    ){
+    ) {
         Row(
             modifier = Modifier
                 .padding(16.dp),
@@ -55,28 +60,60 @@ fun TodoItem(
             Column(
                 modifier = Modifier
                     .weight(1f)
-
             )
             {
                 Text(
                     text = todo.title,
                     style = MaterialTheme.typography.titleLarge
                 )
-                Spacer(modifier = Modifier.height(8.dp))
                 todo.description?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    if (it.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+                if (todo.dueDate != null || todo.attachments.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (todo.dueDate != null) {
+                            Text(
+                                text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(todo.dueDate)),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        if (todo.dueDate != null && todo.attachments.isNotEmpty()) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
+                        if (todo.attachments.isNotEmpty()) {
+                            Icon(
+                                imageVector = Icons.Default.AttachFile,
+                                contentDescription = null,
+                                modifier = Modifier.height(14.dp),
+                                tint = MaterialTheme.colorScheme.outline
+                            )
+                            Text(
+                                text = "${todo.attachments.size}",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
-                onClick = onDeleteClick)
+                onClick = onDeleteClick
+            )
             {
-                Icon(Icons.Default.Delete,
-                        contentDescription = "Delete")
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete"
+                )
             }
         }
     }
@@ -85,22 +122,9 @@ fun TodoItem(
 @Preview
 @Composable
 private fun TodoItemPreview() {
-    VeroListTheme{
+    VeroListTheme {
         TodoItem(
             todo = todo1,
-            onCompletedChange = {},
-            onItemClick = {},
-            onDeleteClick = {},
-
-        )
-    }
-}
-@Preview
-@Composable
-private fun TodoItemCompletedPreview() {
-    VeroListTheme{
-        TodoItem(
-            todo = todo2,
             onCompletedChange = {},
             onItemClick = {},
             onDeleteClick = {},

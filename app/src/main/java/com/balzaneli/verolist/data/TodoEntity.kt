@@ -9,4 +9,6 @@ data class TodoEntity(
     val title: String,
     val description: String?,
     val isCompleted: Boolean,
+    val dueDate: Long? = null,
+    val attachments: List<String> = emptyList(),
 )
