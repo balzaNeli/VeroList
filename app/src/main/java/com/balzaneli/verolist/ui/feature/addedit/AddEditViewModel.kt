@@ -7,19 +7,36 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balzaneli.verolist.data.TodoRepository
+import com.balzaneli.verolist.ui.UiEvent
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class AddEditViewModel(
+    private val id: Long? = null,
     private val repository: TodoRepository,
 ) : ViewModel() {
+
+
+
     var title by mutableStateOf("")
         private set
 
     var description by mutableStateOf<String?>(null)
         private set
 
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
-
+    init {
+        id?.let {
+            viewModelScope.launch{
+                val todo = repository.getBy(it)
+                title = todo?.title ?: ""
+                description = todo?.description
+            }
+        }
+    }
 
     fun onEvent(event: AddEditEvent){
         when (event){
@@ -38,7 +55,12 @@ class AddEditViewModel(
 
     private fun saveTodo(){
         viewModelScope.launch {
-            repository.insert(title, description)
+            if(title.isBlank()){
+                _uiEvent.send(UiEvent.ShowSnackbar("Kd o titulo?"))
+                return@launch
+            }
+            repository.insert(title, description, id)
+            _uiEvent.send(UiEvent.NavigationBack)
         }
     }
 }
