@@ -1,1 +1,4 @@
 /build
+# .gitignore — adicione essa linha
+*.jks
+*.keystore
